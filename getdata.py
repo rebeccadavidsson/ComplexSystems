@@ -8,7 +8,7 @@ sns.set()
 
 def run_continuous(env, steps=1000):
 
-    nr_on_track, nr_of_track = [], []
+    nr_on_track = []
 
     for i in tqdm(range(steps)):
 
@@ -17,15 +17,21 @@ def run_continuous(env, steps=1000):
 
         ratio = env.calc_ratio()
         nr_on_track.append(ratio[0])
-        nr_of_track.append(ratio[1])
 
-    return nr_on_track, nr_of_track
+    return nr_on_track
 
 
 def plot_ratio(env, steps):
-
-    nr_on_track, nr_of_track = run_continuous(env, steps)
+    nr_on_track = run_continuous(env, steps)
     plt.plot(np.arange(0, steps), nr_on_track)
+
+
+def showplot(pheromone_strengths):
+    plt.xlabel("Time")
+    plt.ylabel("Number of ants on track")
+    plt.title("Convergence behavior of ants (n=30)")
+    plt.legend(pheromone_strengths)
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -34,14 +40,16 @@ if __name__ == '__main__':
     steps = 1000
     ant_size = 0.4
     pheromone_strengths = [1, 10, 100]
+    loops = 4
 
     for value in pheromone_strengths:
-        print("Calculating for value", value)
-        env = Environment(width=width, height=height, n_colonies=1, n_ants=30, n_obstacles=10, decay=0.99, sigma=0.2,
-                          moore=False, pheromone_strength=value)
-        plot_ratio(env, steps)
+        averages = []
+        for i in range(loops):
+            env = Environment(width=width, height=height, n_colonies=1, n_ants=30, n_obstacles=10, decay=0.99, sigma=0.2,
+                              moore=False, pheromone_strength=value)
+            nr_on_track = run_continuous(env, steps)
+            averages.append(nr_on_track)
+        average = list(map(lambda x: sum(x)/len(x), zip(*averages)))
+        plt.plot(np.arange(0, steps), average)
 
-    plt.xlabel("Time")
-    plt.ylabel("Convergence behavior (ants on track)")
-    plt.legend(pheromone_strengths)
-    plt.show()
+    showplot(pheromone_strengths)
