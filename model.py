@@ -122,7 +122,7 @@ class Environment(Model):
                                             include_center=True)
                 for agent in neighborhood:
                     if type(agent) == Ant:
-                        if self.pheromones[i][j] > self.pheromone_strength / 15:
+                        if self.pheromones[i][j] > self.pheromone_strength / 20:
                             nr_on_track += 1
                             break
 
