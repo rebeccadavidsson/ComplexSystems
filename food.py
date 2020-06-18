@@ -29,6 +29,8 @@ class FoodGrid:
         while not xy:
             x = np.random.randint(0, self.width, 1)[0]
             y = np.random.randint(0, self.height, 1)[0]
+            x = 20
+            y = 13
 
             if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
                 xy = (x, y)

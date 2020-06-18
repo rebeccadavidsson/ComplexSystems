@@ -12,12 +12,12 @@ from scipy.ndimage import gaussian_filter
 from scipy.spatial import distance
 from ant import Ant
 from copy import copy
-from numba import jit
 
 
 class Environment(Model):
     """ A model which contains a number of ant colonies. """
-    def __init__(self, width, height, n_colonies, n_ants, n_obstacles, decay=0.2, sigma=0.1, moore=False, birth=True, death=True):
+    def __init__(self, width, height, n_colonies, n_ants, n_obstacles, decay=0.2,
+                 sigma=0.1, moore=False, birth=True, death=True, pheromone_strength=10):
         """
         :param width: int, width of the system
         :param height: int, height of the system
@@ -34,8 +34,11 @@ class Environment(Model):
         self.death = death
 
         self.pheromone_level = 1
+        self.pheromone_strength = pheromone_strength
+        self.nr_on_track = 0
 
         # Environment variables
+        self.n_ants = n_ants
         self.width = width
         self.height = height
         self.grid = MultiGrid(width, height, False)
@@ -104,6 +107,27 @@ class Environment(Model):
 
         self.grid.move_agent(ant, pos)
 
+    def calc_ratio(self):
+        """
+        Calculate number of ants on a track with pheromones from a specific
+        threshold. Return ratio of ants on the track / ants off the track.
+        """
+        nr_on_track = 0
+        for i in range(self.width):
+            for j in range(self.height):
+                neighborhood = self.grid.get_neighbors(
+                                            (i, j),
+                                            moore=True,
+                                            radius=0,
+                                            include_center=True)
+                for agent in neighborhood:
+                    if type(agent) == Ant:
+                        if self.pheromones[i][j] > self.pheromone_strength / 15:
+                            nr_on_track += 1
+                            break
+
+        return [nr_on_track, self.n_ants - nr_on_track]
+
     def get_random_position(self):
         return (np.random.randint(0, self.width), np.random.randint(0, self.height))
 
@@ -154,7 +178,7 @@ class Environment(Model):
         """
         for (pos, level) in self.pheromone_updates:
             # self.pheromones[pos] += level
-            self.pheromones[pos] += 1
+            self.pheromones[pos] += self.pheromone_strength
 
         self.pheromone_updates = []
 
