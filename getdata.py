@@ -3,27 +3,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 import seaborn as sns
+import pandas as pd
 sns.set()
 
 
-def run_continuous(env, steps=1000):
+def get_iterations(env, steps):
 
-    nr_on_track = []
-
-    for i in tqdm(range(steps)):
+    for iteration in range(steps):
 
         # take a step
-        env.step()
+        status = env.step()
 
-        ratio = env.calc_ratio()
-        nr_on_track.append(ratio[0])
+        if status == "ended":
+            break
 
-    return nr_on_track
-
-
-def plot_ratio(env, steps):
-    nr_on_track = run_continuous(env, steps)
-    plt.plot(np.arange(0, steps), nr_on_track)
+    return iteration
 
 
 def showplot(pheromone_strengths):
@@ -34,22 +28,53 @@ def showplot(pheromone_strengths):
     plt.show()
 
 
+def plot3d(width, height, steps, n, decays, sigmas, pheromone_strength):
+    df = pd.DataFrame(columns=["decay", "sigma", "strength", "iteration"])
+    row = 0
+    decay = 0
+
+    for decay in decays:
+        for sigma in sigmas:
+            for strength in pheromone_strength:
+                print(decay, sigma, strength)
+                env = Environment(width=width, height=height, n_colonies=1,
+                                  n_ants=30, n_obstacles=10, decay=decay, sigma=sigma,
+                                  moore=False, pheromone_strength=strength)
+
+                iter = get_iterations(env, steps)
+                df.loc[row] = [decay, sigma, strength, iter]
+                row += 1
+            decay += 1
+    return df
+
+
+def plot2d(width, height, steps, n, decays, sigmas, strength):
+    df = pd.DataFrame(columns=["decay", "sigma", "iteration"])
+    row = 0
+
+    for decay in decays:
+        for sigma in sigmas:
+            print(decay, sigma)
+            env = Environment(width=width, height=height, n_colonies=1,
+                              n_ants=30, n_obstacles=10, decay=decay, sigma=sigma,
+                              moore=False, pheromone_strength=strength)
+
+            iter = get_iterations(env, steps)
+            df.loc[row] = [decay, sigma, iter]
+            row += 1
+    return df
+
+
 if __name__ == '__main__':
     width = 26
     height = 26
-    steps = 1000
-    ant_size = 0.4
-    pheromone_strengths = [1, 10, 100]
-    loops = 4
+    steps = 1300
+    n = 20
+    decays = np.linspace(0.7, 0.99, num=n)
+    sigmas = np.linspace(0.01, 0.6, num=n)
+    pheromone_strengths = np.linspace(1, 15, num=n)
 
-    for value in pheromone_strengths:
-        averages = []
-        for i in range(loops):
-            env = Environment(width=width, height=height, n_colonies=1, n_ants=30, n_obstacles=10, decay=0.99, sigma=0.2,
-                              moore=False, pheromone_strength=value)
-            nr_on_track = run_continuous(env, steps)
-            averages.append(nr_on_track)
-        average = list(map(lambda x: sum(x)/len(x), zip(*averages)))
-        plt.plot(np.arange(0, steps), average)
-
-    showplot(pheromone_strengths)
+    for strength in pheromone_strengths:
+        df = plot2d(width, height, steps, n, decays, sigmas, strength)
+        # df = plot3d(width, height, steps, n, decays, sigmas, pheromone_strengths)
+        df.to_pickle("./df_heatmapMP4" + strength + ".pkl")

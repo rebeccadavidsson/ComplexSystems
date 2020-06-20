@@ -17,8 +17,8 @@ class FoodGrid:
         """
         When there is no more food left on the map, add one food location.
         """
-        if len(np.where(self.grid > 0)[0]) == 0:
-            self.add_food()
+        # if len(np.where(self.grid > 0)[0]) == 0:
+        #     self.add_food()
 
     def add_food(self, xy=None):
         """
@@ -26,16 +26,20 @@ class FoodGrid:
         colony.
         :param xy: a tuple of integers (x, y)
         """
-        while not xy:
-            x = np.random.randint(0, self.width, 1)[0]
-            y = np.random.randint(0, self.height, 1)[0]
-            x = 20
-            y = 13
 
-            if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
-                xy = (x, y)
-
-        self.grid[xy] += 100000
+        # for i in range(0,4):
+            # while not xy:
+            #     x = np.random.randint(0, self.width, 1)[0]
+            #     y = np.random.randint(0, self.height, 1)[0]
+            #
+            #     if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
+            #         xy = (x, y)
+        # self.grid[xy] += 50
+        # xy=None
+        locations = [(5, 5), (20, 5), (14, 24)]
+        for location in locations:
+            xy = (location[0], location[1])
+            self.grid[xy] += 50
 
     def get_food_pos(self):
         """

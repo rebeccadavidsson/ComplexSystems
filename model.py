@@ -55,6 +55,7 @@ class Environment(Model):
 
         self.pheromones = np.zeros((width, height), dtype=np.float)
         self.pheromone_updates = []
+        self.found_pheromone = False
 
         self.food = FoodGrid(self)
         self.food.add_food()
@@ -64,7 +65,7 @@ class Environment(Model):
             self.obstacles.append(Obstacle(self))
 
         # Metric + data collection
-        self.min_distance = distance.cityblock(self.colonies[0].pos, self.food.get_food_pos())
+        self.min_distance = distance.cityblock(self.colonies[0].pos, self.food.get_food_pos()[0])
         self.datacollector = DataCollector(
             model_reporters={"Minimum path length": metrics.min_path_length,
                              "Mean minimum path length": metrics.mean_min_path_length},
@@ -89,6 +90,25 @@ class Environment(Model):
 
         self.schedule.step()
         self.update_pheromones()
+        if not self.check_exit():
+            return "ended"
+        else:
+            return "running"
+
+
+    def check_exit(self):
+        # print(self.pheromones, self.found_pheromone)
+
+        for i in self.pheromones:
+            for j in i:
+                if j > 1 and len(np.where(self.food.grid > 0)[0]) == 0:
+                    self.found_pheromone = True
+                    return True
+        if self.found_pheromone is False:
+            return True
+
+        return False
+
 
     def move_agent(self, ant, pos):
         """
@@ -208,8 +228,8 @@ class Environment(Model):
         pheromones = np.rot90(self.pheromones.astype(np.float64).reshape(self.width, self.height))
         if not self.pheromone_im:
             self.pheromone_im = self.ax.imshow(pheromones,
-                                               vmin=0, vmax=50,
-                                               interpolation='None', cmap="Purples")
+                                               vmin=0, vmax=30,
+                                               interpolation='None', cmap="Greens")
         else:
             self.pheromone_im.set_array(pheromones)
 

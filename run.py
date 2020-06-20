@@ -65,7 +65,7 @@ def animate_distribution(path_lengths, steps):
 if __name__ == '__main__':
     width = 26
     height = 26
-    steps = 1000
+    steps = 2000
     ant_size = 0.4
 
     # var_params = {"n_ants": range(20, 22), 'sigma': np.arange(0, 1, 0.2)}
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # batch_run.run_all()
     # print(batch_run.get_model_vars_dataframe())
     env = Environment(width=width, height=height, n_colonies=1, n_ants=30, n_obstacles=10, decay=0.99, sigma=0.2,
-                      moore=False, pheromone_strength=10)
+                      moore=False, pheromone_strength=100)
     plot_continuous(env, steps)
     # compute_then_plot(env, steps)
     # compute_no_plot(env, steps=steps)
