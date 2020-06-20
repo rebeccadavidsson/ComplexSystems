@@ -69,7 +69,7 @@ if __name__ == '__main__':
     width = 26
     height = 26
     steps = 1300
-    n = 2
+    n = 10
     decays = np.linspace(0.7, 0.99, num=n)
     sigmas = np.linspace(0.01, 0.6, num=n)
     pheromone_strengths = np.linspace(1, 15, num=n)
