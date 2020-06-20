@@ -69,12 +69,12 @@ if __name__ == '__main__':
     width = 26
     height = 26
     steps = 1300
-    n = 10
+    n = 12
     decays = np.linspace(0.7, 0.99, num=n)
     sigmas = np.linspace(0.01, 0.6, num=n)
-    pheromone_strengths = np.linspace(1, 15, num=n)
+    pheromone_strengths = np.linspace(0.8, 2.5, num=n)
 
     for strength in pheromone_strengths:
         df = plot2d(width, height, steps, n, decays, sigmas, strength)
         # df = plot3d(width, height, steps, n, decays, sigmas, pheromone_strengths)
-        df.to_pickle("./df_heatmapMP4" + str(strength) + ".pkl")
+        df.to_pickle("./data/df_heatmapMP4" + str(strength) + ".pkl")
