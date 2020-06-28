@@ -18,9 +18,10 @@ pip3 install -r requirements.txt
 
 This will install the packages scipy, matplotlib, Mesa, tqdm, pandas, seaborn and numpy.
 
-## Running the simulation
+## Running the simulation (in the 'code' folder)
 
-A full simulation is run by the command:
+Inside the code folder:
+a full simulation is run by the command:
 
 ```
 python3 run.py
@@ -40,7 +41,7 @@ env = Environment(width, height, n_colonies, n_ants, n_obstacles, decay, sigma,
                     moore=False, pheromone_strength)
 ```
 
-### Tests and plotting
+### Tests and plotting (inside 'code' folder)
 
 The model was run several times with varying parameters. For these tests, the file averageruns.py was used. This file can be run with the following command:
 
