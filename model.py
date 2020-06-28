@@ -142,7 +142,7 @@ class Environment(Model):
                                             include_center=True)
                 for agent in neighborhood:
                     if type(agent) == Ant:
-                        if self.pheromones[i][j] > 5:
+                        if self.pheromones[i][j] > self.pheromone_strength:
                             nr_on_track += 1
                             break
 
@@ -228,7 +228,7 @@ class Environment(Model):
         pheromones = np.rot90(self.pheromones.astype(np.float64).reshape(self.width, self.height))
         if not self.pheromone_im:
             self.pheromone_im = self.ax.imshow(pheromones,
-                                               vmin=0, vmax=30,
+                                               vmin=0, vmax=5,
                                                interpolation='None', cmap="Greens")
         else:
             self.pheromone_im.set_array(pheromones)

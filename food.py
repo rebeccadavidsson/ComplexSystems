@@ -28,18 +28,19 @@ class FoodGrid:
         """
 
         # for i in range(0,4):
-            # while not xy:
-            #     x = np.random.randint(0, self.width, 1)[0]
-            #     y = np.random.randint(0, self.height, 1)[0]
-            #
-            #     if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
-            #         xy = (x, y)
-        # self.grid[xy] += 50
-        # xy=None
+        #     while not xy:
+        #         x = np.random.randint(0, self.width, 1)[0]
+        #         y = np.random.randint(0, self.height, 1)[0]
+        #
+        #         if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
+        #             xy = (x, y)
+        #     self.grid[xy] += 1000
+        #     xy=None
         locations = [(5, 5), (20, 5), (14, 24)]
+        locations = [((self.width - 2), (self.height - 2))]
         for location in locations:
             xy = (location[0], location[1])
-            self.grid[xy] += 50
+            self.grid[xy] += 10000
 
     def get_food_pos(self):
         """
