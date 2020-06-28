@@ -50,6 +50,10 @@ python3 averageruns.py
 
 An example of how the plots were made is given in ```heatmap.ipynb```.
 
+## Data
+
+Data that was gathered during the project can be found in the 'data' folder. This folder also contains the plots. 
+
 ## Source
 
 https://github.com/WouterVrielink/MC-ACO
