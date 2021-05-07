@@ -1,7 +1,14 @@
 from model import Environment
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
+WIDTH = 26
+HEIGHT = 26
+STEPS = 2000
+DECAY = 0.99
+SIGMA = 0.5
+STRENGTH = 4.5
 
 
 def compute_then_plot(env, steps):
@@ -24,7 +31,8 @@ def plot_continuous(env, steps=1000):
     fig_num = plt.get_fignums()[0]
 
     for i in range(steps):
-        if not plt.fignum_exists(fig_num): return False
+        if not plt.fignum_exists(fig_num):
+            return False
 
         plt.title('iteration: ' + str(i))
         plt.pause(0.001)
@@ -34,8 +42,32 @@ def plot_continuous(env, steps=1000):
 
         # store the state for animation
         env.animate(ax)
-        fig.canvas.draw()
+        try:
+            fig.canvas.draw()
+        except:
+            print("Ended simulation.")
     return True
+
+
+def parser():
+    parser = argparse.ArgumentParser("run_simulation")
+    parser.add_argument("-decay",
+                        "--decay",
+                        help="float (0, 1), the rate in which the pheromone decays.",
+                        type=float,
+                        required=False)
+    parser.add_argument("-sigma",
+                        "--sigma",
+                        help="float (0, 1), sigma of the Gaussian convolution",
+                        type=float,
+                        required=False)
+    parser.add_argument("-strength",
+                        "--strength",
+                        help="float, strength of pheromones (default = 4.5)",
+                        type=float,
+                        required=False)
+    args = parser.parse_args()
+    return args.decay or DECAY, args.sigma or SIGMA, args.strength or STRENGTH
 
 
 def compute_no_plot(env, steps):
@@ -63,12 +95,10 @@ def animate_distribution(path_lengths, steps):
 
 
 if __name__ == '__main__':
-    width = 26
-    height = 26
-    steps = 2000
-    ant_size = 0.4
 
+    decay, sigma, strength = parser()
 
-    env = Environment(width=width, height=height, n_colonies=1, n_ants=30, n_obstacles=50, decay=0.99, sigma=0.5,
-                      moore=False, pheromone_strength=4.5)
-    plot_continuous(env, steps)
+    env = Environment(width=WIDTH, height=HEIGHT, n_colonies=1, n_ants=40,
+                      n_obstacles=30, decay=decay, sigma=sigma,
+                      moore=False, pheromone_strength=strength)
+    plot_continuous(env, STEPS)

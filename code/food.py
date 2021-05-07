@@ -4,6 +4,7 @@ import matplotlib.patches as patches
 
 class FoodGrid:
     """ Class that keeps track of where food is in its own grid. """
+
     def __init__(self, environment):
         self.environment = environment
         self.width = environment.width
@@ -22,8 +23,8 @@ class FoodGrid:
 
     def add_food(self, xy=None):
         """
-        Adds food on the position specified by xy. If no xy is specified a random location is seleced that is not on a
-        colony.
+        Adds food on the position specified by xy. If no xy is specified a 
+        random location is seleced that is not on a colony.
         :param xy: a tuple of integers (x, y)
         """
 
@@ -34,7 +35,6 @@ class FoodGrid:
             if not any([colony.on_colony((x, y)) for colony in self.environment.colonies]):
                 xy = (x, y)
         self.grid[xy] += 10000
-
 
     def get_food_pos(self):
         """
@@ -48,7 +48,8 @@ class FoodGrid:
 
         :return:
         """
-        food_spots = [self.environment.grid_to_array(pos) for pos in self.get_food_pos()]
+        food_spots = [self.environment.grid_to_array(
+            pos) for pos in self.get_food_pos()]
 
         for i in range(max([len(food_spots), len(self._patches)])):
             if i > len(self._patches) - 1:
